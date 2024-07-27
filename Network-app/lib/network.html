@@ -1,0 +1,405 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 1000px;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="Dipesh Walte">Dipesh Walte</option>
+                                
+                                    <option value="Sujai Pillai">Sujai Pillai</option>
+                                
+                                    <option value="Yogesh Nagpal">Yogesh Nagpal</option>
+                                
+                                    <option value="Satish Gavate">Satish Gavate</option>
+                                
+                                    <option value="Mahesh Deshmukh">Mahesh Deshmukh</option>
+                                
+                                    <option value="Swati Kamble">Swati Kamble</option>
+                                
+                                    <option value="Deep Gawande">Deep Gawande</option>
+                                
+                                    <option value="Vijendra Singh">Vijendra Singh</option>
+                                
+                                    <option value="Nikhil Gadkar">Nikhil Gadkar</option>
+                                
+                                    <option value="Nilesh Jadhav">Nilesh Jadhav</option>
+                                
+                                    <option value="Shreyas Ingale">Shreyas Ingale</option>
+                                
+                                    <option value="Prasad Lingawar">Prasad Lingawar</option>
+                                
+                                    <option value="Shailesh Bhor">Shailesh Bhor</option>
+                                
+                                    <option value="History Connect">History Connect</option>
+                                
+                                    <option value="Abhinav Suryawanshi">Abhinav Suryawanshi</option>
+                                
+                                    <option value="Shripal Modani">Shripal Modani</option>
+                                
+                                    <option value="Dhanesh Walte">Dhanesh Walte</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+              <div id="filter-menu" class="card-header">
+                <div class="row no-gutters">
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'item')"
+                            id="select-item"
+                        >
+                        <option value="">Select a network item</option>
+                        <option value="edge">edge</option>
+                        <option value="node">node</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'property')"
+                            id="select-property"
+                        >
+                        <option value="">Select a property...</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            id="select-value"
+                        >
+                        <option value="">Select value(s)...</option>
+                    </select>
+                  </div>
+                  <div class="col-1 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="highlightFilter(filter);">Filter</button>
+                  </div>
+                  <div class="col-2 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="clearFilter(true)">Reset Selection</button>
+                  </div>
+                </div>
+              </div>
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+                  // explicitly using onItemAdd and this function as we need to save multiple values
+                  let updateValueFilter = function() {
+                      return function () {
+                      filter['value'].push(arguments[0])
+                      }
+                  }
+
+                  let valueControl = new TomSelect("#select-value",{
+                      maxItems: null,
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: updateValueFilter()
+                  });
+
+                  let addValues = function() {
+                      return function () {
+                          // clear the current value options and add the selected attribute values
+                          // tom-select handles duplicates
+                          let selectedProperty = arguments[0];
+                          valueControl.clear();
+                          valueControl.clearOptions();
+                          filter['value'] = []
+                          if (filter['item'] === 'node') {
+                              for (let each in allNodes) {
+                                  valueControl.addOption({
+                                      id:allNodes[each][selectedProperty],
+                                      title:allNodes[each][selectedProperty]
+                                  })
+                              }
+                          }
+                          else if (filter['item'] === 'edge') {
+                              for (let each in allEdges) {
+                                  valueControl.addOption({
+                                      id:allEdges[each][selectedProperty],
+                                      title:allEdges[each][selectedProperty]
+                                  })
+                              }
+                          }
+                      }
+                  };
+
+                  let propControl = new TomSelect("#select-property",{
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addValues()
+                  });
+
+                  let addProperties = function() {
+                      return function () {
+                          // loops through the selected network item and adds the attributes to dropdown
+                          // tom-select handles duplicates
+                          clearFilter(false)
+                          if (arguments[0] === 'edge') {
+                              for (let each in allEdges) {
+                                  if (allEdges.hasOwnProperty(each)) {
+                                      for (let eachProp in allEdges[each]) {
+                                          if (allEdges[each].hasOwnProperty(eachProp)) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                          else if (arguments[0] === 'node') {
+                              for (let each in allNodes) {
+                                  if (allNodes.hasOwnProperty(each)) {
+                                      for (let eachProp in allNodes[each]) {
+                                          if (allNodes[each].hasOwnProperty(eachProp)
+                                              && (eachProp !== 'hidden' && eachProp !== 'savedLabel'
+                                                  && eachProp !== 'hiddenLabel')) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  };
+
+                  let itemControl = new TomSelect("#select-item",{
+                      create: false,
+                      sortField:{
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addProperties()
+                  });
+
+                  function clearFilter(reset) {
+                      // utility function to clear all the selected filter options
+                      // if reset is set to true, the existing filter will be removed
+                      // else, only the dropdown options are cleared
+                      propControl.clear();
+                      propControl.clearOptions();
+                      valueControl.clear();
+                      valueControl.clearOptions();
+                      filter = {
+                          item : '',
+                          property : '',
+                          value : []
+                      }
+                      if (reset) {
+                          itemControl.clear();
+                          filterHighlight({nodes: []})
+                      }
+                  }
+
+                  function updateFilter(value, key) {
+                      // key could be 'item' or 'property' and value is as selected in dropdown
+                      filter[key] = value
+                  }
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"border": "black", "color": "Brown", "font": {"color": "#000000"}, "id": "Dipesh Walte", "label": "Dipesh Walte", "shape": "circle", "size": 30, "title": "Centrist"}, {"border": "black", "color": "Orange", "font": {"color": "#000000"}, "id": "Sujai Pillai", "label": "Sujai Pillai", "shape": "circle", "size": 30, "title": "BJP"}, {"border": "black", "color": "Gold", "font": {"color": "#000000"}, "id": "Yogesh Nagpal", "label": "Yogesh Nagpal", "shape": "circle", "size": 30, "title": "Capitalist"}, {"border": "black", "color": "Blue", "font": {"color": "#000000"}, "id": "Satish Gavate", "label": "Satish Gavate", "shape": "circle", "size": 30, "title": "BAMCEF"}, {"border": "black", "color": "Red", "font": {"color": "#000000"}, "id": "Mahesh Deshmukh", "label": "Mahesh Deshmukh", "shape": "circle", "size": 30, "title": "CPIM"}, {"border": "black", "color": "Cyan", "font": {"color": "#000000"}, "id": "Swati Kamble", "label": "Swati Kamble", "shape": "circle", "size": 30, "title": "Humanitarian"}, {"border": "black", "color": "Orange", "font": {"color": "#000000"}, "id": "Deep Gawande", "label": "Deep Gawande", "shape": "circle", "size": 30, "title": "BJP"}, {"border": "black", "color": "Orange", "font": {"color": "#000000"}, "id": "Vijendra Singh", "label": "Vijendra Singh", "shape": "circle", "size": 30, "title": "Right Wing"}, {"border": "black", "color": "Blue", "font": {"color": "#000000"}, "id": "Nikhil Gadkar", "label": "Nikhil Gadkar", "shape": "circle", "size": 30, "title": "BAMCEF"}, {"border": "black", "color": "Blue", "font": {"color": "#000000"}, "id": "Nilesh Jadhav", "label": "Nilesh Jadhav", "shape": "circle", "size": 30, "title": "BAMCEF"}, {"border": "black", "color": "Yellow", "font": {"color": "#000000"}, "id": "Shreyas Ingale", "label": "Shreyas Ingale", "shape": "circle", "size": 30, "title": "Spiritual"}, {"border": "black", "color": "Orange", "font": {"color": "#000000"}, "id": "Prasad Lingawar", "label": "Prasad Lingawar", "shape": "circle", "size": 30, "title": "Right Wing"}, {"border": "black", "color": "Yellow", "font": {"color": "#000000"}, "id": "Shailesh Bhor", "label": "Shailesh Bhor", "shape": "circle", "size": 30, "title": "Moderate"}, {"border": "black", "color": "Cyan", "font": {"color": "#000000"}, "id": "History Connect", "label": "History Connect", "shape": "circle", "size": 30, "title": "Moderate"}, {"border": "black", "color": "Brown", "font": {"color": "#000000"}, "id": "Abhinav Suryawanshi", "label": "Abhinav Suryawanshi", "shape": "circle", "size": 30, "title": "Centrist"}, {"border": "black", "color": "Yellow", "font": {"color": "#000000"}, "id": "Shripal Modani", "label": "Shripal Modani", "shape": "circle", "size": 30, "title": "Moderate"}, {"border": "black", "color": "Yellow", "font": {"color": "#000000"}, "id": "Dhanesh Walte", "label": "Dhanesh Walte", "shape": "circle", "size": 30, "title": "Moderate"}]);
+                  edges = new vis.DataSet([{"color": "black", "from": "Dipesh Walte", "title": "Frequency_digital: 4\u003cbr\u003eFrequency_physical: 3\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Prasad Lingawar", "value": 7.0}, {"color": "black", "from": "Dipesh Walte", "title": "Frequency_digital: 3\u003cbr\u003eFrequency_physical: 2\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Nikhil Gadkar", "value": 10.0}, {"color": "black", "from": "Dipesh Walte", "title": "Frequency_digital: 2\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 0\u003cbr\u003eNotes_Sharing: 0\u003cbr\u003e", "to": "Mahesh Deshmukh", "value": 9.0}, {"color": "black", "from": "Dipesh Walte", "title": "Frequency_digital: 1\u003cbr\u003eFrequency_physical: 3\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Shailesh Bhor", "value": 4.0}, {"color": "black", "from": "Dipesh Walte", "title": "Frequency_digital: 1\u003cbr\u003eFrequency_physical: 3\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Satish Gavate", "value": 8.0}, {"color": "black", "from": "Dipesh Walte", "title": "Frequency_digital: 1\u003cbr\u003eFrequency_physical: 3\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Sujai Pillai", "value": 8.0}, {"color": "black", "from": "Dipesh Walte", "title": "Frequency_digital: 1\u003cbr\u003eFrequency_physical: 3\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Yogesh Nagpal", "value": 8.0}, {"color": "black", "from": "Satish Gavate", "title": "Frequency_digital: 1\u003cbr\u003eFrequency_physical: 3\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Nikhil Gadkar", "value": 8.0}, {"color": "black", "from": "Mahesh Deshmukh", "title": "Frequency_digital: 12\u003cbr\u003eFrequency_physical: 2\u003cbr\u003eReference_Sharing: 0\u003cbr\u003eNotes_Sharing: 0\u003cbr\u003e", "to": "Swati Kamble", "value": 10.0}, {"color": "black", "from": "Mahesh Deshmukh", "title": "Frequency_digital: 2\u003cbr\u003eFrequency_physical: 4\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Nikhil Gadkar", "value": 10.0}, {"color": "black", "from": "Mahesh Deshmukh", "title": "Frequency_digital: 2\u003cbr\u003eFrequency_physical: 4\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "History Connect", "value": 10.0}, {"color": "black", "dashes": [5, 5], "from": "Dipesh Walte", "title": "Frequency_digital: 1\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "History Connect", "value": 1.0}, {"color": "black", "from": "Dipesh Walte", "title": "Frequency_digital: 1\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Deep Gawande", "value": 9.0}, {"color": "black", "from": "Deep Gawande", "title": "Frequency_digital: 2\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Vijendra Singh", "value": 9.0}, {"color": "black", "from": "Nikhil Gadkar", "title": "Frequency_digital: 3\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Nilesh Jadhav", "value": 10.0}, {"color": "black", "from": "Nikhil Gadkar", "title": "Frequency_digital: 3\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Swati Kamble", "value": 10.0}, {"color": "black", "from": "Dipesh Walte", "title": "Frequency_digital: 4\u003cbr\u003eFrequency_physical: 2\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Vijendra Singh", "value": 7.0}, {"color": "black", "dashes": [5, 5], "from": "Nikhil Gadkar", "title": "Frequency_digital: 1\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Yogesh Nagpal", "value": 1.0}, {"color": "black", "dashes": [5, 5], "from": "Swati Kamble", "title": "Frequency_digital: 1\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Yogesh Nagpal", "value": 1.0}, {"color": "black", "dashes": [5, 5], "from": "Nikhil Gadkar", "title": "Frequency_digital: 1\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Shailesh Bhor", "value": 1.0}, {"color": "black", "from": "Dipesh Walte", "title": "Frequency_digital: 3\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Shreyas Ingale", "value": 10.0}, {"color": "black", "from": "Dipesh Walte", "title": "Frequency_digital: 3\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Abhinav Suryawanshi", "value": 10.0}, {"color": "black", "from": "Dipesh Walte", "title": "Frequency_digital: 3\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Shripal Modani", "value": 10.0}, {"color": "black", "from": "Dipesh Walte", "title": "Frequency_digital: 3\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Dhanesh Walte", "value": 10.0}, {"color": "black", "dashes": [5, 5], "from": "Dhanesh Walte", "title": "Frequency_digital: 1\u003cbr\u003eFrequency_physical: 1\u003cbr\u003eReference_Sharing: 1\u003cbr\u003eNotes_Sharing: 1\u003cbr\u003e", "to": "Abhinav Suryawanshi", "value": 1.0}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
